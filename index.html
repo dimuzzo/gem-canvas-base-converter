@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base Converter | 0d 0b 0o 0x</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Main Container -->
+    <div class="w-full max-w-lg bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-slate-900 p-6 border-b border-slate-700 text-center relative">
+            <h1 class="text-2xl font-bold text-white mb-2 flex items-center justify-center gap-2">
+                <i data-lucide="cpu" class="text-indigo-500"></i> Base Converter
+            </h1>
+            <p class="text-slate-400 text-sm">Real-time conversion between Decimal, Binary, Octal, and Hexadecimal.</p>
+        </div>
+
+        <!-- Converter Form -->
+        <div class="p-6 space-y-6">
+
+            <!-- Decimal Input -->
+            <div class="relative group">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Decimal</label>
+                <div class="flex rounded-lg shadow-sm">
+                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-600 bg-slate-700 text-indigo-300 mono-font text-sm font-bold select-none">
+                        0d
+                    </span>
+                    <input type="text" id="decimal" placeholder="10" 
+                        class="mono-font flex-1 min-w-0 block w-full px-3 py-3 rounded-r-md border border-slate-600 bg-slate-900 text-white placeholder-slate-600 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg transition-colors"
+                        oninput="convert(this, 10)">
+                    <button onclick="copyToClipboard('decimal')" class="ml-2 p-2 text-slate-400 hover:text-white transition-colors" title="Copy">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <p id="error-decimal" class="text-red-500 text-xs mt-1 hidden">Invalid decimal input</p>
+            </div>
+
+            <!-- Binary Input -->
+            <div class="relative group">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Binary</label>
+                <div class="flex rounded-lg shadow-sm">
+                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-600 bg-slate-700 text-emerald-300 mono-font text-sm font-bold select-none">
+                        0b
+                    </span>
+                    <input type="text" id="binary" placeholder="1010" 
+                        class="mono-font flex-1 min-w-0 block w-full px-3 py-3 rounded-r-md border border-slate-600 bg-slate-900 text-white placeholder-slate-600 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-lg transition-colors"
+                        oninput="convert(this, 2)">
+                    <button onclick="copyToClipboard('binary')" class="ml-2 p-2 text-slate-400 hover:text-white transition-colors" title="Copy">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <p id="error-binary" class="text-red-500 text-xs mt-1 hidden">Invalid binary input (0-1 only)</p>
+            </div>
+
+            <!-- Octal Input -->
+            <div class="relative group">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Octal</label>
+                <div class="flex rounded-lg shadow-sm">
+                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-600 bg-slate-700 text-amber-300 mono-font text-sm font-bold select-none">
+                        0o
+                    </span>
+                    <input type="text" id="octal" placeholder="12" 
+                        class="mono-font flex-1 min-w-0 block w-full px-3 py-3 rounded-r-md border border-slate-600 bg-slate-900 text-white placeholder-slate-600 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 sm:text-lg transition-colors"
+                        oninput="convert(this, 8)">
+                    <button onclick="copyToClipboard('octal')" class="ml-2 p-2 text-slate-400 hover:text-white transition-colors" title="Copy">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <p id="error-octal" class="text-red-500 text-xs mt-1 hidden">Invalid octal input (0-7 only)</p>
+            </div>
+
+            <!-- Hex Input -->
+            <div class="relative group">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Hexadecimal</label>
+                <div class="flex rounded-lg shadow-sm">
+                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-slate-600 bg-slate-700 text-pink-300 mono-font text-sm font-bold select-none">
+                        0x
+                    </span>
+                    <input type="text" id="hex" placeholder="A" 
+                        class="mono-font flex-1 min-w-0 block w-full px-3 py-3 rounded-r-md border border-slate-600 bg-slate-900 text-white placeholder-slate-600 uppercase focus:ring-2 focus:ring-pink-500 focus:border-pink-500 sm:text-lg transition-colors"
+                        oninput="convert(this, 16)">
+                    <button onclick="copyToClipboard('hex')" class="ml-2 p-2 text-slate-400 hover:text-white transition-colors" title="Copy">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <p id="error-hex" class="text-red-500 text-xs mt-1 hidden">Invalid hex input (0-9, A-F only)</p>
+            </div>
+
+            <!-- Reset Button -->
+            <button onclick="resetFields()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex justify-center items-center gap-2">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Clear All
+            </button>
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-slate-900 px-6 py-4 border-t border-slate-700 text-center text-xs text-slate-500">
+            <p>Type in any field to convert immediately.</p>
+        </div>
+    </div>
+
+    <!-- Notification Toast (Hidden by default) -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none text-sm font-semibold">
+        Copied to clipboard!
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Helper to get element references
+        const els = {
+            10: { input: document.getElementById('decimal'), error: document.getElementById('error-decimal'), prefix: '0d' },
+            2:  { input: document.getElementById('binary'), error: document.getElementById('error-binary'), prefix: '0b' },
+            8:  { input: document.getElementById('octal'), error: document.getElementById('error-octal'), prefix: '0o' },
+            16: { input: document.getElementById('hex'), error: document.getElementById('error-hex'), prefix: '0x' }
+        };
+
+        function resetFields() {
+            Object.values(els).forEach(el => {
+                el.input.value = '';
+                el.input.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+                el.error.classList.add('hidden');
+            });
+        }
+
+        function isValid(value, radix) {
+            if (value === '') return true;
+            // Validate based on radix
+            const validChars = {
+                2: /^[01]+$/,
+                8: /^[0-7]+$/,
+                10: /^[0-9]+$/,
+                16: /^[0-9A-Fa-f]+$/
+            };
+            return validChars[radix].test(value);
+        }
+
+        function convert(sourceElement, sourceRadix) {
+            let value = sourceElement.value.trim();
+
+            // Strip prefix if user pasted it (e.g. 0xFA -> FA)
+            const prefix = els[sourceRadix].prefix;
+            if (value.toLowerCase().startsWith(prefix)) {
+                value = value.substring(2);
+                // Update the input to show cleaner value without prefix inside the box
+                // (since the prefix is shown visually outside)
+                // However, we don't want to interrupt typing, so we only strip if it's a paste operation mostly.
+                // For now, let's just calculate with the stripped value.
+            }
+
+            // Error Handling UI
+            const isValidInput = isValid(value, sourceRadix);
+            const errorEl = els[sourceRadix].error;
+            
+            if (!isValidInput && value !== '') {
+                sourceElement.classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+                errorEl.classList.remove('hidden');
+                // Do not update other fields if input is invalid
+                return;
+            } else {
+                sourceElement.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+                errorEl.classList.add('hidden');
+            }
+
+            // If empty, clear all
+            if (value === '') {
+                Object.keys(els).forEach(key => {
+                    if (parseInt(key) !== sourceRadix) els[key].input.value = '';
+                });
+                return;
+            }
+
+            // Perform Conversion
+            // We use BigInt for large number support if possible, or standard parseInt
+            // Standard parseInt is safer for general web compatibility without complex BigInt handling for 'toString'
+            
+            let decimalValue;
+            try {
+                decimalValue = parseInt(value, sourceRadix);
+            } catch (e) {
+                return; // Fail silently
+            }
+
+            if (isNaN(decimalValue)) return;
+
+            // Update other fields
+            Object.keys(els).forEach(key => {
+                const targetRadix = parseInt(key);
+                if (targetRadix !== sourceRadix) {
+                    els[key].input.value = decimalValue.toString(targetRadix).toUpperCase();
+                }
+            });
+        }
+
+        function copyToClipboard(type) {
+            let inputId = type; 
+            let radix = 10;
+            
+            if (type === 'decimal') radix = 10;
+            if (type === 'binary') radix = 2;
+            if (type === 'octal') radix = 8;
+            if (type === 'hex') radix = 16;
+
+            const inputEl = document.getElementById(inputId);
+            const value = inputEl.value;
+            if(!value) return;
+
+            const prefix = els[radix].prefix;
+            const textToCopy = prefix + value; // Requirement: copy with prefix
+
+            // Fallback for clipboard
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy);
+            } else {
+                // Legacy method
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Unable to copy', err);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            showToast(`Copied: ${textToCopy}`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('opacity-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
