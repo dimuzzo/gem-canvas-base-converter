@@ -33,7 +33,7 @@ You can view the live application here: https://dimuzzo.github.io/gem-canvas-bas
 Running Locally
 1. Clone the repository:
   
-  ``git clone [https://github.com/dimuzzo/gem-canvas-base-converter.git](https://github.com/dimuzzo/gem-canvas-base-converter.git)``
+  ``git clone https://github.com/dimuzzo/gem-canvas-base-converter.git``
   
 2. Open index.html in any modern web browser.
 
